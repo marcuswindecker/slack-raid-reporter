@@ -1,30 +1,33 @@
 <?php
-if (PHP_SAPI == 'cli-server') {
-    // To help the built-in PHP dev server, check if the request was actually for
-    // something which should probably be served as a static file
-    $url  = parse_url($_SERVER['REQUEST_URI']);
-    $file = __DIR__ . $url['path'];
-    if (is_file($file)) {
-        return false;
-    }
-}
+use \Psr\Http\Message\ServerRequestInterface as Request;
+use \Psr\Http\Message\ResponseInterface as Response;
 
-require __DIR__ . '/../vendor/autoload.php';
+require '../vendor/autoload.php';
+require '../src/classes/Upload.php';
 
-session_start();
+$config['displayErrorDetails'] = true;
+$config['addContentLengthHeader'] = false;
 
-// Instantiate the app
-$settings = require __DIR__ . '/../src/settings.php';
-$app = new \Slim\App($settings);
+$app = new \Slim\App(['settings' => $config]);
+$app->post('/stats', function (Request $request, Response $response, array $args) {
+    $upload = new Upload();
 
-// Set up dependencies
-require __DIR__ . '/../src/dependencies.php';
+    $requestBody = $request->getParsedBody();    
 
-// Register middleware
-require __DIR__ . '/../src/middleware.php';
+    $responseBody['response_type'] = 'in_channel';
+    $responseBody['text'] = $requestBody['text'];
+    $responseBody['attachments'] = [
+    	[
+    		'color' => 'good',
+	    	'text' => 'hannah sux',
+	    	'image_url' => 'https://www.placehold.it/200?text=hannah+sux'
+    	]
+    ];
 
-// Register routes
-require __DIR__ . '/../src/routes.php';
+    $response = $response->withStatus(200)
+      ->withHeader('Content-Type', 'application/json')
+      ->write(json_encode($responseBody));
 
-// Run app
+    return $response;
+});
 $app->run();
