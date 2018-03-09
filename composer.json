@@ -15,16 +15,14 @@
         "php": ">=5.5.0",
         "slim/slim": "^3.1",
         "slim/php-view": "^2.0",
-        "monolog/monolog": "^1.17",
-        "jonnyw/php-phantomjs": "4.*"
+        "monolog/monolog": "^1.17"
     },
     "require-dev": {
         "phpunit/phpunit": ">=4.8 < 6.0",
         "laravel/homestead": "^7.1"
     },
     "config": {
-        "process-timeout" : 0,
-        "bin-dir": "public/bin"
+        "process-timeout" : 0
     },
     "autoload-dev": {
         "psr-4": {
@@ -34,12 +32,6 @@
     "scripts": {
         "start": "vagrant up",
         "stop": "vagrant suspend",
-        "test": "phpunit",
-        "post-install-cmd": [
-            "PhantomInstaller\\Installer::installPhantomJS"
-        ],
-        "post-update-cmd": [
-            "PhantomInstaller\\Installer::installPhantomJS"
-        ]
+        "test": "phpunit"
     }
 }
